@@ -3,6 +3,10 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+const authRoutes = require('./routes/authRoutes');
+const eventRoutes = require('./routes/eventRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
+
 const app = express();
 
 // Middleware
@@ -19,10 +23,21 @@ mongoose.connect(mongoURI, {
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.log('MongoDB connection error:', err));
 
+// Routes
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to SmartWinnrr API' });
 });
 
+// Authentication routes
+app.use('/api/auth', authRoutes);
+
+// Event management routes
+app.use('/api/events', eventRoutes);
+
+// Analytics routes
+app.use('/api/analytics', analyticsRoutes);
+
+// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Something went wrong!' });
